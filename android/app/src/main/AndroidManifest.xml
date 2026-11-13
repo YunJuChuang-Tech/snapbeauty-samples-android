@@ -1,0 +1,24 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-feature android:name="android.hardware.camera.any" android:required="true" />
+    <uses-feature android:glEsVersion="0x00030000" android:required="true" />
+    <application android:name=".SampleApplication" android:allowBackup="false" android:label="SnapBeauty Samples"
+        android:icon="@drawable/ic_app" android:theme="@style/AppTheme" android:supportsRtl="true">
+        <activity android:name=".MainActivity" android:exported="false" android:screenOrientation="portrait" />
+        <activity android:name=".TrtcActivity" android:exported="false" android:screenOrientation="portrait" />
+        <activity android:name=".AgoraActivity" android:exported="false" android:screenOrientation="portrait" />
+        <activity android:name=".ZegoActivity" android:exported="false" android:screenOrientation="portrait" />
+        <activity android:name="im.zego.internal.screencapture.ZegoScreenCaptureManager$ZegoScreenCaptureAssistantActivity" tools:node="remove" />
+        <service android:name="im.zego.internal.screencapture.ZegoScreenCaptureService" tools:node="remove" />
+        <activity android:name=".HomeActivity" android:exported="true" android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

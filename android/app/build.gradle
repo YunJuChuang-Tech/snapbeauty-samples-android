@@ -1,0 +1,40 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+def cameraOnly = providers.gradleProperty('cameraOnly').map { it.toBoolean() }.getOrElse(false)
+
+android {
+    namespace 'ai.snapbeauty.samples'
+    compileSdk 36
+    defaultConfig {
+        applicationId 'ai.snapbeauty.samples'
+        minSdk 23
+        targetSdk 36
+        versionCode cameraOnly ? 11 : 9
+        versionName cameraOnly ? '0.3.8' : '0.3.6'
+        testInstrumentationRunner 'ai.snapbeauty.samples.SmokeTest'
+        // Match the architectures available in the locally supplied beauty engine.
+        ndk { abiFilters 'arm64-v8a', 'armeabi-v7a' }
+    }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+    buildTypes { release { minifyEnabled false } }
+    lint { abortOnError true }
+    sourceSets.main.assets.srcDir(rootProject.file('.local/license-assets'))
+    if (cameraOnly) { sourceSets.main.manifest.srcFile('src/cameraOnly/AndroidManifest.xml') }
+}
+
+kotlin {
+    jvmToolchain(17)
+    if (cameraOnly) { sourceSets.main.kotlin.exclude('**/Trtc*.kt', '**/Agora*.kt', '**/Zego*.kt', '**/HomeActivity.kt') }
+}
+
+dependencies {
+    implementation 'cn.snapbeauty:snapbeauty-android:1.3.0'
+    if (!cameraOnly) {
+        implementation 'com.tencent.liteav:LiteAVSDK_TRTC:13.5.0.20670'
+        implementation 'io.agora.rtc:full-rtc-basic:4.6.4'
+        implementation 'im.zego:express-video:3.25.0'
+    }
+}

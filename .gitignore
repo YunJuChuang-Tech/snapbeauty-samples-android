@@ -1,0 +1,57 @@
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+local.properties
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+.local/
+
+# Build output and editor files
+.gradle/
+.kotlin/
+.idea/
+.DS_Store
+._*
+Thumbs.db
+**/build/
+*.log
+.cxx/
+*.apk
+*.aab
+*.aar
+captures/
+__pycache__/
+*.pyc
+*.ipa
+*.xcuserstate
+xcuserdata/
+*.framework/
+*.xcframework/
+*.a
+*.dylib
+# Credentials, authorizations and signing material
+*.license
+*.pem
+*.key
+*.pfx
+*.p8
+*.p7c
+*.p7s
+*.provisionprofile
+*.conf
+*.dpapi
+*.enc
+.netrc
+.npmrc
+.pypirc
+credentials.json
+service-account*.json
+
+# Local verification media and receipts
+**/Verification/
+**/verification/
+makeup-fixture.jpg
+makeup-fixture-regions.json
