@@ -21,7 +21,7 @@ object SdkEffectChecks {
         }
         check(ProcessorFactory.faceParams(EffectState.defaults()) == FaceParams(), "Default bidirectional controls equal SDK neutral shape")
         check(ProcessorFactory.skinParams(EffectState(0f, 0f, 0f, 0f, 0f, 0f, null)) == SkinParams(), "Default extra skin controls equal SDK neutral detail")
-        check(ai.snapbeauty.core.SnapBeautyEngine.VERSION == "1.3.0", "Published SDK version is 1.3.0")
+        check(ai.snapbeauty.core.SnapBeautyEngine.VERSION == "1.3.1", "Published SDK version is 1.3.1")
         val resources = ProcessorFactory.resources(device.targetContext)
         val keys = device.targetContext.assets.list("snapbeauty/luts").orEmpty().filter { it.endsWith(".png") }.map { it.removeSuffix(".png") }.toSet()
         check(resources.filters.mapNotNull { it.key }.toSet() == keys, "Filter menu exactly matches supplied AAR resources")
