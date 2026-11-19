@@ -8,8 +8,9 @@ import kotlin.math.roundToInt
 
 object ProcessorFactory {
     fun resources(context: Context): EffectResources {
-        val filters = context.assets.list("snapbeauty/luts").orEmpty().filter { it.endsWith(".png") }
-            .map { it.removeSuffix(".png") }.sorted().map { EffectChoice(it, EffectCatalog.filterName(it)) }
+        // SDK built-in LUTs plus the CC BY-SA host pack this app registers itself (HostFilters).
+        val filters = (HostFilters.builtIn(context.assets) + HostFilters.ids(context.assets)).distinct().sorted()
+            .map { EffectChoice(it, EffectCatalog.filterName(it)) }
         val makeup = MakeupAssets.load(context.assets)
         return EffectResources(listOf(EffectChoice(null, "无妆")) + makeup.choices,
             listOf(EffectChoice(null, "原色")) + filters,
@@ -30,7 +31,7 @@ object ProcessorFactory {
                 smileLines = state.value("removeNasolabial"), faceContour = state.value("faceThree"))
     fun create(context: Context): BeautyProcessor = object : BeautyProcessor {
         private val makeup = MakeupAssets.load(context.assets)
-        private val engine = SnapBeautyEngine(context.applicationContext)
+        private val engine = SnapBeautyEngine(context.applicationContext).also { HostFilters.register(context.assets, it) }
         private val bridge = SdkTextureBridge()
         private var missingMakeup = false
         private var neutral = false

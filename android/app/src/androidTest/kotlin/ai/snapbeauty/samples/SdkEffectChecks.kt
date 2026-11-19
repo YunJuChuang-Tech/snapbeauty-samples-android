@@ -21,10 +21,11 @@ object SdkEffectChecks {
         }
         check(ProcessorFactory.faceParams(EffectState.defaults()) == FaceParams(), "Default bidirectional controls equal SDK neutral shape")
         check(ProcessorFactory.skinParams(EffectState(0f, 0f, 0f, 0f, 0f, 0f, null)) == SkinParams(), "Default extra skin controls equal SDK neutral detail")
-        check(ai.snapbeauty.core.SnapBeautyEngine.VERSION == "1.3.1", "Published SDK version is 1.3.1")
+        check(ai.snapbeauty.core.SnapBeautyEngine.VERSION == "1.3.2", "Published SDK version is 1.3.2")
         val resources = ProcessorFactory.resources(device.targetContext)
-        val keys = device.targetContext.assets.list("snapbeauty/luts").orEmpty().filter { it.endsWith(".png") }.map { it.removeSuffix(".png") }.toSet()
-        check(resources.filters.mapNotNull { it.key }.toSet() == keys, "Filter menu exactly matches supplied AAR resources")
+        val keys = (HostFilters.builtIn(device.targetContext.assets) + HostFilters.ids(device.targetContext.assets)).toSet()
+        check(HostFilters.ids(device.targetContext.assets).size == 10, "All 10 CC BY-SA host filters are packaged with their notice")
+        check(resources.filters.mapNotNull { it.key }.toSet() == keys, "Filter menu exactly matches AAR plus host filter resources")
         check(resources.styles.size == 16, "All 15 public whole-makeup styles plus no makeup are exposed")
         for (choice in resources.styles.filter { it.key != null }) {
             check(choice.makeupFilter in keys, "Preset references a supplied, renamed LUT: ${choice.key}")

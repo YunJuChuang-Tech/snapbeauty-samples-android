@@ -6,7 +6,7 @@
 
 - JDK 17、Android SDK 36，Android 8.0 / API 26 及以上、OpenGL ES 3.0。
 - Kotlin 2.3.10、AGP 8.13.2、Gradle Wrapper 8.13。
-- Gradle 从 Maven 仓库解析 `cn.snapbeauty:snapbeauty-android:1.3.1`；SDK 使用及再分发遵循其自身条款。
+- Gradle 从 Maven 仓库解析 `cn.snapbeauty:snapbeauty-android:1.3.2`；SDK 使用及再分发遵循其自身条款。
 - 统一 APK 包含 arm64-v8a 和 armeabi-v7a，与本地美颜引擎的架构范围一致。
 - 通过 `ANDROID_HOME` 或不提交的 `android/local.properties` 指定 Android SDK。
 
@@ -42,7 +42,7 @@ Debug 产物为 `android/app/build/outputs/apk/debug/app-debug.apk`，版本 `0.
 
 相机权限用于预览；麦克风默认关闭，只在用户开启时申请。切换场景先停止原页面采集和会话，各厂商引擎由各自页面管理，不自动进房。Token/UserSig 只在会话输入，不保存凭据。真实远端通话仍待有效凭据联调。
 
-共用面板覆盖 11 项美肤、25 项美型、15 套整妆、本地 AAR 动态滤镜，以及 1–4 人脸与处理预算。支持独立强度、按住对比、一键重置、前后相机、点击动画收放和上下跟手拖动；TRTC 在“更多效果”打开共用控制。Activity 重建保留参数、页签和选中项。完整说明见 [效果清单](../docs/EFFECTS.md)。
+共用面板覆盖 11 项美肤、25 项美型、15 套整妆、SDK 内置滤镜加本示例注册的宿主滤镜，以及 1–4 人脸与处理预算。支持独立强度、按住对比、一键重置、前后相机、点击动画收放和上下跟手拖动；TRTC 在“更多效果”打开共用控制。Activity 重建保留参数、页签和选中项。完整说明见 [效果清单](../docs/EFFECTS.md)。
 
 妆容名称、SDK ID 和搭配滤镜由两端共用清单提供。选妆容自动带上滤镜，强度随妆容浓度变化；手动滤镜可独立覆盖，全部重置恢复dawn + rose3。详见 [效果清单](../docs/EFFECTS.md)。
 

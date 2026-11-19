@@ -39,8 +39,8 @@ internal object MakeupAssets {
             }
             val filter = style.getString("filter")
             require(filter.matches(Regex("[a-z]+[0-9]+")))
-            val filterPresent = checked.getOrPut("snapbeauty/luts/$filter.png") {
-                runCatching { read("snapbeauty/luts/$filter.png").isNotEmpty() }.getOrDefault(false)
+            val filterPresent = HostFilters.lutPaths(filter).any { path ->
+                checked.getOrPut(path) { runCatching { read(path).isNotEmpty() }.getOrDefault(false) }
             }
             if (required.length() > 0 && complete && filterPresent) {
                 val key = style.getString("key")

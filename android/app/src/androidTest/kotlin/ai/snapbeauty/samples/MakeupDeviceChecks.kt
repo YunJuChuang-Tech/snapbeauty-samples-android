@@ -25,7 +25,7 @@ object MakeupDeviceChecks {
         check("dawn" !in missing.keys && !missing.complete, "Missing artwork is rejected before an engine can silently fall back")
         val corrupted = MakeupAssets.validate(manifest) { path -> if (path.endsWith("lip_01.json")) byteArrayOf(1, 2) else read(path) }
         check("dawn" !in corrupted.keys, "Corrupt artwork is rejected before showing a style")
-        val missingFilter = MakeupAssets.validate(manifest) { path -> if (path == "snapbeauty/luts/rose3.png") error("missing filter") else read(path) }
+        val missingFilter = MakeupAssets.validate(manifest) { path -> if (path.endsWith("luts/rose3.png")) error("missing filter") else read(path) }
         check("dawn" !in missingFilter.keys && !missingFilter.complete, "A preset with a missing associated LUT is not offered")
         val hashes = mutableSetOf<String>()
         val files = manifest.getJSONObject("files")

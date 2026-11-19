@@ -12,7 +12,7 @@
 
 | 场景入口 | 采集与渲染方案 | 依赖 SDK | 场景文档 |
 | :--- | :--- | :--- | :--- |
-| **相机美颜** | Camera2 → GLES 3.0 → 美颜引擎 → 屏幕预览 | `cn.snapbeauty:snapbeauty-android:1.3.1` | [效果清单](docs/EFFECTS.md) |
+| **相机美颜** | Camera2 → GLES 3.0 → 美颜引擎 → 屏幕预览 | `cn.snapbeauty:snapbeauty-android:1.3.2` | [效果清单](docs/EFFECTS.md) |
 | **腾讯云 TRTC** | TRTC 相机采集 → 共享 EGL 纹理美颜回调 → 发送 | `com.tencent.liteav:LiteAVSDK_TRTC:13.5.0.20670` | [TRTC 接入指南](docs/TRTC.md) |
 | **声网 Agora** | 自定义 Camera2 采集 → 美颜 → RGBA 外部视频源推送 | `io.agora.rtc:full-rtc-basic:4.6.4` | [Agora 接入指南](docs/AGORA.md) |
 | **即构 ZEGO** | 自定义 Camera2 采集 → 美颜 → 原始 RGBA 自定义采集推流 | `im.zego:express-video:3.25.0` | [ZEGO 接入指南](docs/ZEGO.md) |
@@ -92,3 +92,7 @@ snapbeauty-samples-android/
 1. **示例工程源码**：本项目除第三方组件外的示例代码遵循 [Apache License 2.0](LICENSE) 协议开源。
 2. **底层 SDK 说明**：`cn.snapbeauty:snapbeauty-android` 为商业专有美颜 SDK，从 Maven 仓库公开解析，其使用与商业分发须遵循 SnapBeauty 官方商业授权协议。
 3. **第三方 SDK**：腾讯云 TRTC、声网 Agora 与即构 ZEGO SDK 属于各厂商所有，受其各自官方开发者协议约束。
+4. **滤镜 LUT**：`android/app/src/main/assets/host-filters/luts/` 中的 10 张滤镜（`bright3`、`rose3`、`stylized11`、`mono1`、`warm1`、`warm2`、`fresh1`、`muted5`、`natural2`、`natural4`）不属于 SDK，由本示例随 App 打包，并在创建引擎时用 `registerFilter` 注册（见 `HostFilters.kt`）。
+   - 素材来源：RawTherapee Film Simulation Collection 2015-09-20（https://rawtherapee.com/shared/HaldCLUT.zip ），作者 **Pat David、Pavlov Dmitry、Michael Ezra**。
+   - 改动：重采样为 64³，用强度、提亮、冷暖、色调、饱和度、对比度六个全局参数调整，再三线性采样为 16³ 并量化为 RGB8（256×16）。
+   - 基于本示例发布 App 时，如保留这些滤镜，须一并保留上述署名与许可文件；不需要时删除 `host-filters/` 目录即可，其余功能不受影响。
