@@ -34,7 +34,7 @@ class EffectState private constructor(values: Map<String, Float>, val style: Str
         out.putInt("effectFaces", maxFaces); out.putFloat("effectBudget", frameBudgetMs)
     }
     companion object {
-        fun defaults() = EffectState(.35f, .2f, .1f, 0f, 0f, .4f, null)
+        fun defaults() = EffectState(.6f, .5f, .1f, 0f, 0f, .6f, null)
         fun restore(saved: Bundle?, fallback: EffectState = defaults()): EffectState {
             val keys = saved?.getStringArray("effectKeys") ?: return fallback
             val values = saved.getFloatArray("effectValues") ?: return fallback
