@@ -23,7 +23,11 @@ object EffectDeviceChecks {
         EffectCatalog.parameters.forEachIndexed { i, p -> snapshot = snapshot.withValue(p.key, (i + 1) / 40f) }
         val resources = ProcessorFactory.resources(device.targetContext)
         snapshot = snapshot.withStyle(resources.styles.last().key).withFilter(resources.filters.last().key).withValue("makeup", .83f).withValue("filterIntensity", .67f).withTracking(4, 66.67f)
+        snapshot = snapshot.withLipstick("coral").withValue("lipstick:coral", .31f)
+            .withLipstick("vintage").withValue("lipstick:vintage", .72f)
         val saved = Bundle(); snapshot.save(saved); val restored = EffectState.restore(saved)
+        check(restored.lipstick == "vintage" && restored.value("lipstick:vintage") == .72f && restored.withLipstick("coral").value("lipstick:coral") == .31f, "Bundle preserves selected lipstick and per-shade strengths")
+        check(restored.withLipstick(null).style == restored.style && restored.withLipstick(null).filter == restored.filter, "Disabling lipstick preserves makeup and filter")
         for (p in EffectCatalog.parameters) check(snapshot.value(p.key) == restored.value(p.key), "Bundle preserves ${p.key}")
         check(restored.style == snapshot.style && restored.filter == snapshot.filter && restored.makeup == .83f && restored.filterIntensity == .67f, "Bundle preserves makeup/filter and their independent amounts")
         check(restored.maxFaces == 4 && restored.frameBudgetMs == 66.67f, "Bundle preserves multi-face budget")

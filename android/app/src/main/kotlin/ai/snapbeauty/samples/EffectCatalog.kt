@@ -9,6 +9,14 @@ data class EffectResources(val styles: List<EffectChoice>, val filters: List<Eff
 
 /** Descriptions only; SDK units and calls remain in the adapter. */
 object EffectCatalog {
+    data class LipstickShade(val key: String, val name: String, val rgba: FloatArray)
+    val lipsticks = listOf(
+        LipstickShade("coral", "珊瑚色", floatArrayOf(.611f, .352f, .352f, .500f)),
+        LipstickShade("grapefruit", "西柚色", floatArrayOf(.752f, .267f, .231f, .543f)),
+        LipstickShade("rosewood", "豆沙粉", floatArrayOf(.713f, .374f, .409f, .517f)),
+        LipstickShade("tangerine", "元气橘", floatArrayOf(.786f, .326f, .252f, .629f)),
+        LipstickShade("vintage", "复古红", floatArrayOf(.476f, .018f, .025f, .777f))
+    )
     val skin = listOf(
         EffectParameter("smooth", "磨皮"), EffectParameter("white", "美白"), EffectParameter("rosy", "红润"),
         EffectParameter("sharpen", "锐化"), EffectParameter("clarity", "清晰"), EffectParameter("delspot", "祛斑痘"),

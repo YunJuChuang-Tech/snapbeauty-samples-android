@@ -41,10 +41,13 @@ object ProcessorFactory {
             engine.skin = skinParams(state)
             engine.face = faceParams(state)
             missingMakeup = state.style != null && state.style !in makeup.keys
-            neutral = EffectCatalog.parameters.all { state.value(it.key) == it.neutral } &&
+            val lipstick = EffectCatalog.lipsticks.firstOrNull { it.key == state.lipstick }
+            val lipstickStrength = lipstick?.let { state.value("lipstick:${it.key}") } ?: 0f
+            neutral = (lipstick == null || lipstickStrength <= 0f) && EffectCatalog.parameters.all { state.value(it.key) == it.neutral } &&
                 (state.style == null || missingMakeup || state.makeup <= 0f) && (state.filter == null || state.filterIntensity <= 0f)
             engine.setMakeup(if (missingMakeup || state.makeup <= 0f) null else state.style, state.makeup)
             engine.setFilter(state.filter, state.filterIntensity)
+            engine.setLipstick(lipstick?.rgba, lipstickStrength)
             engine.maxFaces = state.maxFaces; engine.frameBudgetMs = state.frameBudgetMs
         }
         override fun process(texture: Int, width: Int, height: Int): Int {

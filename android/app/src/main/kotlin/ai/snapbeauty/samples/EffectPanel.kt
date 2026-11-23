@@ -16,7 +16,7 @@ import kotlin.math.roundToInt
 class EffectPanel(context: Context, initial: EffectState, private val effectResources: EffectResources, private val changed: (EffectState) -> Unit) : LinearLayout(context) {
     var state = initial; private set
     private var group = 0
-    private val selected = intArrayOf(0, 0, 0, 0)
+    private val selected = intArrayOf(0, 0, 0, 0, 0)
     private var available = true
     private val tabs = LinearLayout(context)
     private val options = LinearLayout(context).apply { gravity = Gravity.CENTER_VERTICAL }
@@ -33,7 +33,7 @@ class EffectPanel(context: Context, initial: EffectState, private val effectReso
         orientation = VERTICAL
         selected[2] = effectResources.styles.indexOfFirst { it.key == state.style }.coerceAtLeast(0)
         selected[3] = effectResources.filters.indexOfFirst { it.key == state.filter }.coerceAtLeast(0)
-        listOf("美肤", "美型", "妆容", "滤镜").forEachIndexed { index, name ->
+        listOf("美肤", "美型", "妆容", "滤镜", "口红").forEachIndexed { index, name ->
             tabs.addView(text(name, 15).apply { gravity = Gravity.CENTER; setOnClickListener { if (group != index) { group = index; render(); revealSelected(false) } } }, LayoutParams(0, dp(44), 1f))
         }
         addView(tabs); addView(scroll, LayoutParams(-1, dp(48)))
@@ -67,8 +67,8 @@ class EffectPanel(context: Context, initial: EffectState, private val effectReso
     }
     fun saveUi(out: Bundle) { out.putInt("effectTab", group); out.putIntArray("effectSelected", selected); out.putInt("effectScroll", scroll.scrollX) }
     fun restoreUi(saved: Bundle?) {
-        group = saved?.getInt("effectTab", 0)?.coerceIn(0, 3) ?: 0
-        saved?.getIntArray("effectSelected")?.takeIf { it.size == 4 }?.copyInto(selected)
+        group = saved?.getInt("effectTab", 0)?.coerceIn(0, 4) ?: 0
+        saved?.getIntArray("effectSelected")?.takeIf { it.size == 4 || it.size == 5 }?.copyInto(selected)
         selected[0] = selected[0].coerceIn(0, EffectCatalog.skin.lastIndex); selected[1] = selected[1].coerceIn(0, EffectCatalog.shape.lastIndex)
         selected[2] = effectResources.styles.indexOfFirst { it.key == state.style }.coerceAtLeast(0)
         selected[3] = effectResources.filters.indexOfFirst { it.key == state.filter }.coerceAtLeast(0)
@@ -84,10 +84,11 @@ class EffectPanel(context: Context, initial: EffectState, private val effectReso
     private fun adjusted(key: String?) = key != null && abs(state.value(key) - effectResources.defaults().value(key)) > .005f
     private fun bidirectional(key: String) = EffectCatalog.parameters.firstOrNull { it.key == key }?.neutral == .5f
     private fun display(progress: Int) = if (!bidirectional(parameterKey())) "$progress" else (progress - 50).let { if (it > 0) "+$it" else "$it" }
-    private fun choices() = when (group) { 0 -> EffectCatalog.skin.map { EffectChoice(it.key, it.name) }; 1 -> EffectCatalog.shape.map { EffectChoice(it.key, it.name) }; 2 -> effectResources.styles; else -> effectResources.filters }
-    private fun parameterKey() = when (group) { 0 -> EffectCatalog.skin[selected[0]].key; 1 -> EffectCatalog.shape[selected[1]].key; 2 -> "makeup"; else -> "filterIntensity" }
+    private fun choices() = when (group) { 0 -> EffectCatalog.skin.map { EffectChoice(it.key, it.name) }; 1 -> EffectCatalog.shape.map { EffectChoice(it.key, it.name) }; 2 -> effectResources.styles; 3 -> effectResources.filters; else -> listOf(EffectChoice(null, "无")) + EffectCatalog.lipsticks.map { EffectChoice(it.key, it.name) } }
+    private fun parameterKey() = when (group) { 0 -> EffectCatalog.skin[selected[0]].key; 1 -> EffectCatalog.shape[selected[1]].key; 2 -> "makeup"; 3 -> "filterIntensity"; else -> "lipstick:${state.lipstick ?: ""}" }
     private fun render() {
         selected[3] = effectResources.filters.indexOfFirst { it.key == state.filter }.coerceAtLeast(0)
+        selected[4] = EffectCatalog.lipsticks.indexOfFirst { it.key == state.lipstick } + 1
         for (i in 0 until tabs.childCount) (tabs.getChildAt(i) as TextView).apply { setTextColor(if (group == i) ACCENT else MUTED); setTypeface(null, if (group == i) Typeface.BOLD else Typeface.NORMAL); alpha = if (available) 1f else .4f }
         options.removeAllViews()
         val choices = choices()
@@ -103,13 +104,14 @@ class EffectPanel(context: Context, initial: EffectState, private val effectReso
                     selected[group] = index
                     if (group == 2) { state = state.selectStyle(choice); changed(state) }
                     if (group == 3) { state = state.withFilter(choice.key); changed(state) }
+                    if (group == 4) { state = state.withLipstick(choice.key); changed(state) }
                     keepScroll(); revealSelected(true)
                 }
             }
             options.addView(option, LayoutParams(-2, dp(36)).apply { setMargins(dp(3), 0, dp(3), 0) })
         }
         val key = parameterKey()
-        label.text = when (group) { 2 -> "妆容浓度"; 3 -> "滤镜"; else -> choices[selected[group]].name }
+        label.text = when (group) { 2 -> "妆容浓度"; 3 -> "滤镜"; 4 -> "口红"; else -> choices[selected[group]].name }
         slider.contentDescription = "${label.text}强度"; updating = true; slider.progress = (state.value(key) * 100).roundToInt(); updating = false; amount.text = display(slider.progress)
         slider.isEnabled = available && (group < 2 || choices.getOrNull(selected[group])?.key != null)
         scroll.visibility = if (available) View.VISIBLE else View.GONE
@@ -121,6 +123,7 @@ class EffectPanel(context: Context, initial: EffectState, private val effectReso
             !available -> "当前版本仅预览相机。"
             group == 2 && effectResources.makeupIssue != null -> effectResources.makeupIssue
             group == 2 && state.style == null -> "选择一套妆容后可调浓度"
+            group == 4 && state.lipstick == null -> "选择口红后可调强度"
             group == 3 && state.filter == null -> "选择滤镜后可调强度"
             group == 2 && state.filterFollowsMakeup -> "已搭配 ${EffectCatalog.filterName(state.filter!!)} · 浓度联动"
             group == 3 && state.filterFollowsMakeup -> "随妆容浓度联动 · 手动调节后独立"
