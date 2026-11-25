@@ -5,6 +5,7 @@ data class EffectChoice(val key: String?, val name: String, val makeupFilter: St
 data class EffectResources(val styles: List<EffectChoice>, val filters: List<EffectChoice>, val makeupIssue: String? = null) {
     /** First visit opens with the first complete style, so makeup is visible without hunting for it. */
     fun defaults() = EffectState.defaults().selectStyle(if (makeupIssue == null) styles.firstOrNull { it.key != null } else null)
+    fun preset(male: Boolean) = if (male) EffectState.maleDefaults() else defaults()
 }
 
 /** Descriptions only; SDK units and calls remain in the adapter. */
@@ -19,6 +20,7 @@ object EffectCatalog {
     )
     val skin = listOf(
         EffectParameter("smooth", "磨皮"), EffectParameter("white", "美白"), EffectParameter("rosy", "红润"),
+        EffectParameter("aegyoSal", "眼妆"),
         EffectParameter("sharpen", "锐化"), EffectParameter("clarity", "清晰"), EffectParameter("delspot", "祛斑痘"),
         EffectParameter("eyeBright", "亮眼"), EffectParameter("toothWhiten", "美牙"), EffectParameter("removePouch", "去黑眼圈"),
         EffectParameter("removeNasolabial", "去法令纹"), EffectParameter("faceThree", "五官立体")

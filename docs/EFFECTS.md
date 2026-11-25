@@ -56,19 +56,19 @@
 | 展示名称 | SDK 妆容 ID | 搭配滤镜 ID |
 | -------- | ----------- | ----------- |
 | dawn     | `dawn`      | `rose3`     |
-| glow     | `glow`      | `cool4`     |
-| dew      | `dew`       | `fresh1`    |
-| breeze   | `breeze`    | `fresh3`    |
-| dusk     | `dusk`      | `cool11`    |
-| neon     | `neon`      | `bright4`   |
-| autumn   | `autumn`    | `bright3`   |
+| glow     | `glow`      | `bright2`   |
+| dew      | `dew`       | `fresh2`    |
+| breeze   | `breeze`    | `natural2`  |
+| dusk     | `dusk`      | `rose7`     |
+| neon     | `neon`      | `rose8`     |
+| autumn   | `autumn`    | `warm1`     |
 | ripple   | `ripple`    | `rose2`     |
-| velvet   | `velvet`    | `warm2`     |
-| haze     | `haze`      | `rose8`     |
+| velvet   | `velvet`    | `rose3`     |
+| haze     | `haze`      | `peach5`    |
 | ember    | `ember`     | `fresh2`    |
-| frost    | `frost`     | `warm2`     |
-| cloud    | `cloud`     | `fresh3`    |
-| shade    | `shade`     | `bright2`   |
+| frost    | `frost`     | `natural1`  |
+| cloud    | `cloud`     | `bright2`   |
+| shade    | `shade`     | `bright1`   |
 | ink      | `ink`       | `mono1`     |
 
 切换妆容会应用对应滤镜，初始及重置浓度为 40%，妆容和自动搭配滤镜共用该浓度；设为 0 时二者都关闭。切换妆容保留当前妆容浓度。选择“无妆”会清除自动搭配滤镜。

@@ -28,7 +28,7 @@ object ProcessorFactory {
                 smoothing = state.smooth * 6f, brightening = state.white, rosiness = state.rosy,
                 sharpness = state.value("sharpen"), texture = state.value("clarity"), blemishRemoval = state.value("delspot"),
                 eyeBrightening = state.value("eyeBright"), teethWhitening = state.value("toothWhiten"), undereyeBags = state.value("removePouch"),
-                smileLines = state.value("removeNasolabial"), faceContour = state.value("faceThree"))
+                smileLines = state.value("removeNasolabial"), faceContour = state.value("faceThree"), aegyoSal = state.value("aegyoSal"))
     fun create(context: Context): BeautyProcessor = object : BeautyProcessor {
         private val makeup = MakeupAssets.load(context.assets)
         private val engine = SnapBeautyEngine(context.applicationContext).also { HostFilters.register(context.assets, it) }

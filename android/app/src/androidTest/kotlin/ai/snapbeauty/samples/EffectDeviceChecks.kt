@@ -18,7 +18,7 @@ object EffectDeviceChecks {
     @JvmStatic fun run(device: Instrumentation): Int {
         var checks = 0
         fun check(value: Boolean, message: String) { if (!value) throw AssertionError(message); checks++ }
-        check(EffectCatalog.skin.size == 11 && EffectCatalog.shape.size == 25, "Complete public parameter catalog")
+        check(EffectCatalog.skin.size == 12 && EffectCatalog.shape.size == 25, "Complete public parameter catalog")
         var snapshot = EffectState.defaults()
         EffectCatalog.parameters.forEachIndexed { i, p -> snapshot = snapshot.withValue(p.key, (i + 1) / 40f) }
         val resources = ProcessorFactory.resources(device.targetContext)

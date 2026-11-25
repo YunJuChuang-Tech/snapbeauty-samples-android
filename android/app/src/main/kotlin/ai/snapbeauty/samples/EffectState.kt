@@ -35,7 +35,23 @@ class EffectState private constructor(values: Map<String, Float>, val style: Str
         out.putInt("effectFaces", maxFaces); out.putFloat("effectBudget", frameBudgetMs)
     }
     companion object {
-        fun defaults() = EffectState(.6f, .5f, .1f, 0f, 0f, .6f, null)
+        fun defaults() = EffectState(
+            mapOf(
+                "smooth" to .6f, "white" to .48f, "rosy" to .1f, "slim" to 0f, "eyes" to 0f, "makeup" to .6f,
+                "delspot" to .38f, "removePouch" to .45f, "removeNasolabial" to .35f,
+                "faceThree" to .28f, "eyeBright" to .28f, "aegyoSal" to .58f, "clarity" to .12f
+            ),
+            null, null, 1, 1000f / 30
+        )
+        fun maleDefaults() = EffectState(
+            mapOf(
+                "smooth" to .45f, "white" to .22f, "rosy" to .08f, "slim" to 0f, "eyes" to 0f, "makeup" to .6f,
+                "delspot" to .35f, "removePouch" to .40f, "removeNasolabial" to .20f,
+                "faceThree" to .40f, "eyeBright" to .20f, "aegyoSal" to .68f,
+                "sharpen" to .16f, "clarity" to .16f, "lipstick:coral" to .18f
+            ),
+            null, null, 1, 1000f / 30, false, "coral"
+        )
         fun restore(saved: Bundle?, fallback: EffectState = defaults()): EffectState {
             val keys = saved?.getStringArray("effectKeys") ?: return fallback
             val values = saved.getFloatArray("effectValues") ?: return fallback

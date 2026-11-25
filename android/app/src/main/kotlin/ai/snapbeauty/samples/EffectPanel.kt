@@ -15,10 +15,11 @@ import kotlin.math.roundToInt
 /** Complete shared controls for local camera and all RTC scenes. */
 class EffectPanel(context: Context, initial: EffectState, private val effectResources: EffectResources, private val changed: (EffectState) -> Unit) : LinearLayout(context) {
     var state = initial; private set
+    var malePreset = false; private set
     private var group = 0
     private val selected = intArrayOf(0, 0, 0, 0, 0)
     private var available = true
-    private val tabs = LinearLayout(context)
+    private val tabs = LinearLayout(context).apply { gravity = Gravity.CENTER_VERTICAL }
     private val options = LinearLayout(context).apply { gravity = Gravity.CENTER_VERTICAL }
     // Horizontal strip: the sheet owns vertical gestures, so options never compete with collapse dragging.
     private val scroll = HorizontalScrollView(context).apply { isHorizontalScrollBarEnabled = false; addView(options) }
@@ -26,24 +27,18 @@ class EffectPanel(context: Context, initial: EffectState, private val effectReso
     private val amount = TextView(context)
     private val slider = SeekBar(context)
     private val restore = TextView(context)
-    private val hint = TextView(context)
+    private val sliderRow = LinearLayout(context).apply { gravity = Gravity.CENTER_VERTICAL }
+    private val bottomBar = LinearLayout(context).apply { gravity = Gravity.CENTER_VERTICAL }
     private val settings = Button(context)
     private var updating = false
     init {
         orientation = VERTICAL
         selected[2] = effectResources.styles.indexOfFirst { it.key == state.style }.coerceAtLeast(0)
         selected[3] = effectResources.filters.indexOfFirst { it.key == state.filter }.coerceAtLeast(0)
-        listOf("美肤", "美型", "妆容", "滤镜", "口红").forEachIndexed { index, name ->
-            tabs.addView(text(name, 15).apply { gravity = Gravity.CENTER; setOnClickListener { if (group != index) { group = index; render(); revealSelected(false) } } }, LayoutParams(0, dp(44), 1f))
-        }
-        addView(tabs); addView(scroll, LayoutParams(-1, dp(48)))
-        val values = LinearLayout(context).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(0, dp(8), 0, 0) }
-        label.setTextColor(TEXT); label.textSize = 12f; values.addView(label, LayoutParams(0, dp(26), 1f))
-        restore.text = "恢复默认"; restore.textSize = 11f; restore.setTextColor(MUTED); restore.gravity = Gravity.CENTER; restore.setPadding(dp(10), 0, dp(10), 0)
-        restore.setOnClickListener { state = state.withValue(parameterKey(), effectResources.defaults().value(parameterKey())); changed(state); keepScroll() }
-        values.addView(restore, LayoutParams(-2, dp(32)))
-        amount.setTextColor(ACCENT); amount.textSize = 13f; amount.typeface = Typeface.MONOSPACE; amount.gravity = Gravity.END; values.addView(amount, LayoutParams(dp(36), -2)); addView(values)
+        label.setTextColor(TEXT); label.textSize = 11f; label.maxLines = 1
+        sliderRow.addView(label, LayoutParams(-2, dp(28)).apply { rightMargin = dp(4) })
         slider.max = 100; slider.progressTintList = ColorStateList.valueOf(ACCENT); slider.thumbTintList = ColorStateList.valueOf(ACCENT)
+        slider.setPadding(dp(8), 0, dp(8), 0)
         slider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
                 if (updating || !fromUser) return
@@ -52,21 +47,45 @@ class EffectPanel(context: Context, initial: EffectState, private val effectReso
             override fun onStartTrackingTouch(seek: SeekBar) = Unit
             // Refresh adjusted markers once per gesture instead of rebuilding options on every frame.
             override fun onStopTrackingTouch(seek: SeekBar) = keepScroll()
-        }); addView(slider, LayoutParams(-1, dp(40)))
-        val bottom = LinearLayout(context).apply { gravity = Gravity.CENTER_VERTICAL }
-        hint.setTextColor(MUTED); hint.textSize = 10f; bottom.addView(hint, LayoutParams(0, dp(38), 1f))
+        }); sliderRow.addView(slider, LayoutParams(0, dp(30), 1f))
+        amount.setTextColor(ACCENT); amount.textSize = 12f; amount.typeface = Typeface.MONOSPACE; amount.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+        sliderRow.addView(amount, LayoutParams(dp(30), dp(28)))
+        restore.text = "恢复默认"; restore.textSize = 10f; restore.setTextColor(MUTED); restore.gravity = Gravity.CENTER; restore.setPadding(dp(6), 0, dp(2), 0)
+        restore.setOnClickListener { state = state.withValue(parameterKey(), currentDefaults().value(parameterKey())); changed(state); keepScroll() }
+        sliderRow.addView(restore, LayoutParams(-2, dp(28)))
+        addView(sliderRow, LayoutParams(-1, dp(32)))
+        addView(scroll, LayoutParams(-1, dp(36)))
+        listOf("美肤", "美型", "妆容", "滤镜", "口红").forEachIndexed { index, name ->
+            tabs.addView(text(name, 13).apply { gravity = Gravity.CENTER; setOnClickListener { if (group != index) { group = index; render(); revealSelected(false) } } }, LayoutParams(0, dp(32), 1f))
+        }
+        bottomBar.addView(tabs, LayoutParams(0, dp(32), 1f))
         settings.text = "人脸设置"; settings.textSize = 10f; settings.isAllCaps = false; settings.setTextColor(ACCENT)
-        settings.background = rounded(0xff2b332d.toInt()); settings.contentDescription = "多人脸与处理预算设置"
-        settings.setOnClickListener { trackingSettings() }; bottom.addView(settings, LayoutParams(dp(82), dp(32))); addView(bottom); render()
+        settings.setPadding(dp(8), 0, dp(8), 0); settings.minWidth = 0; settings.minimumWidth = 0; settings.minHeight = 0; settings.minimumHeight = 0
+        settings.background = rounded(0x802b332d.toInt()); settings.contentDescription = "多人脸与处理预算设置"
+        settings.setOnClickListener { trackingSettings() }
+        bottomBar.addView(settings, LayoutParams(-2, dp(24)).apply { leftMargin = dp(6) })
+        addView(bottomBar, LayoutParams(-1, dp(34))); render()
     }
+    private fun currentDefaults() = effectResources.preset(malePreset)
     fun setAvailable(value: Boolean) { available = value; render() }
-    fun reset() {
-        state = effectResources.defaults(); selected.fill(0)
+    fun applyGenderPreset(male: Boolean) {
+        malePreset = male
+        state = effectResources.preset(male).withTracking(state.maxFaces, state.frameBudgetMs)
         selected[2] = effectResources.styles.indexOfFirst { it.key == state.style }.coerceAtLeast(0)
+        selected[3] = effectResources.filters.indexOfFirst { it.key == state.filter }.coerceAtLeast(0)
+        selected[4] = EffectCatalog.lipsticks.indexOfFirst { it.key == state.lipstick } + 1
         changed(state); render(); revealSelected(false)
     }
-    fun saveUi(out: Bundle) { out.putInt("effectTab", group); out.putIntArray("effectSelected", selected); out.putInt("effectScroll", scroll.scrollX) }
+    fun reset() {
+        state = currentDefaults(); selected.fill(0)
+        selected[2] = effectResources.styles.indexOfFirst { it.key == state.style }.coerceAtLeast(0)
+        selected[3] = effectResources.filters.indexOfFirst { it.key == state.filter }.coerceAtLeast(0)
+        selected[4] = EffectCatalog.lipsticks.indexOfFirst { it.key == state.lipstick } + 1
+        changed(state); render(); revealSelected(false)
+    }
+    fun saveUi(out: Bundle) { out.putInt("effectTab", group); out.putIntArray("effectSelected", selected); out.putInt("effectScroll", scroll.scrollX); out.putBoolean("effectMalePreset", malePreset) }
     fun restoreUi(saved: Bundle?) {
+        malePreset = saved?.getBoolean("effectMalePreset", false) ?: false
         group = saved?.getInt("effectTab", 0)?.coerceIn(0, 4) ?: 0
         saved?.getIntArray("effectSelected")?.takeIf { it.size == 4 || it.size == 5 }?.copyInto(selected)
         selected[0] = selected[0].coerceIn(0, EffectCatalog.skin.lastIndex); selected[1] = selected[1].coerceIn(0, EffectCatalog.shape.lastIndex)
@@ -81,7 +100,7 @@ class EffectPanel(context: Context, initial: EffectState, private val effectReso
         val x = (chip.left + chip.width / 2 - scroll.width / 2).coerceAtLeast(0)
         if (smooth) scroll.smoothScrollTo(x, 0) else scroll.scrollTo(x, 0)
     }
-    private fun adjusted(key: String?) = key != null && abs(state.value(key) - effectResources.defaults().value(key)) > .005f
+    private fun adjusted(key: String?) = key != null && abs(state.value(key) - currentDefaults().value(key)) > .005f
     private fun bidirectional(key: String) = EffectCatalog.parameters.firstOrNull { it.key == key }?.neutral == .5f
     private fun display(progress: Int) = if (!bidirectional(parameterKey())) "$progress" else (progress - 50).let { if (it > 0) "+$it" else "$it" }
     private fun choices() = when (group) { 0 -> EffectCatalog.skin.map { EffectChoice(it.key, it.name) }; 1 -> EffectCatalog.shape.map { EffectChoice(it.key, it.name) }; 2 -> effectResources.styles; 3 -> effectResources.filters; else -> listOf(EffectChoice(null, "无")) + EffectCatalog.lipsticks.map { EffectChoice(it.key, it.name) } }
@@ -95,9 +114,9 @@ class EffectPanel(context: Context, initial: EffectState, private val effectReso
         choices.forEachIndexed { index, choice ->
             val picked = index == selected[group]
             val marked = group < 2 && adjusted(choice.key)
-            val option = text(choice.name, 12).apply {
-                gravity = Gravity.CENTER; minWidth = dp(56); setPadding(dp(14), 0, dp(14), 0); setTextColor(if (picked) BACKGROUND else TEXT)
-                background = rounded(if (picked) ACCENT else 0xff2b332d.toInt()).apply { if (marked && !picked) setStroke(dp(1), ACCENT) }
+            val option = text(choice.name, 11).apply {
+                gravity = Gravity.CENTER; minWidth = dp(48); setPadding(dp(11), 0, dp(11), 0); setTextColor(if (picked) BACKGROUND else TEXT)
+                background = rounded(if (picked) ACCENT else 0x7a262d28.toInt()).apply { if (marked && !picked) setStroke(dp(1), ACCENT) }
                 contentDescription = if (marked) "${choice.name}，已调整" else choice.name
                 setOnClickListener {
                     if (index == selected[group] && group < 2) return@setOnClickListener
@@ -108,28 +127,16 @@ class EffectPanel(context: Context, initial: EffectState, private val effectReso
                     keepScroll(); revealSelected(true)
                 }
             }
-            options.addView(option, LayoutParams(-2, dp(36)).apply { setMargins(dp(3), 0, dp(3), 0) })
+            options.addView(option, LayoutParams(-2, dp(28)).apply { setMargins(dp(2), 0, dp(2), 0) })
         }
         val key = parameterKey()
         label.text = when (group) { 2 -> "妆容浓度"; 3 -> "滤镜"; 4 -> "口红"; else -> choices[selected[group]].name }
         slider.contentDescription = "${label.text}强度"; updating = true; slider.progress = (state.value(key) * 100).roundToInt(); updating = false; amount.text = display(slider.progress)
         slider.isEnabled = available && (group < 2 || choices.getOrNull(selected[group])?.key != null)
         scroll.visibility = if (available) View.VISIBLE else View.GONE
-        listOf(slider, label, amount, settings).forEach { it.visibility = scroll.visibility }
-        restore.visibility = if (available && group < 2 && adjusted(key)) View.VISIBLE else View.INVISIBLE
+        sliderRow.visibility = scroll.visibility; bottomBar.visibility = scroll.visibility
+        restore.visibility = if (available && group < 2 && adjusted(key)) View.VISIBLE else View.GONE
         restore.contentDescription = "${label.text}恢复默认"
-        val count = EffectCatalog.parameters.count { adjusted(it.key) }
-        hint.text = when {
-            !available -> "当前版本仅预览相机。"
-            group == 2 && effectResources.makeupIssue != null -> effectResources.makeupIssue
-            group == 2 && state.style == null -> "选择一套妆容后可调浓度"
-            group == 4 && state.lipstick == null -> "选择口红后可调强度"
-            group == 3 && state.filter == null -> "选择滤镜后可调强度"
-            group == 2 && state.filterFollowsMakeup -> "已搭配 ${EffectCatalog.filterName(state.filter!!)} · 浓度联动"
-            group == 3 && state.filterFollowsMakeup -> "随妆容浓度联动 · 手动调节后独立"
-            bidirectional(key) -> "左右滑动选项 · 0 为原始比例 · 已调 $count 项"
-            else -> "左右滑动选项 · 描边为已调整 · 已调 $count 项"
-        }
     }
     private fun trackingSettings() {
         val form = LinearLayout(context).apply { orientation = VERTICAL; setPadding(dp(22), dp(8), dp(22), 0) }

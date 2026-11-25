@@ -17,7 +17,7 @@ import kotlin.math.roundToInt
 
 /** A clipped sheet with fixed-size contents: dragging changes reveal height, never effect state. */
 class CollapsiblePanel(context: Context, private val onCollapse: () -> Unit) : LinearLayout(context) {
-    val content = LinearLayout(context).apply { orientation = VERTICAL; setPadding(0, 0, 0, dp(12)) }
+    val content = LinearLayout(context).apply { orientation = VERTICAL; setPadding(0, 0, 0, dp(6)) }
     var collapsed = false; private set
     /** Currently visible body height, so siblings can compensate without resizing heavy views. */
     val revealedBody get() = (bodyHeight * reveal).roundToInt()
@@ -25,8 +25,8 @@ class CollapsiblePanel(context: Context, private val onCollapse: () -> Unit) : L
     private var bodyHeight = 0
     private var animator: ValueAnimator? = null
     private val touch = ViewConfiguration.get(context)
-    private val caption = TextView(context).apply { textSize = 11f; setTextColor(ACCENT); gravity = Gravity.CENTER }
-    private val handle = LinearLayout(context).apply { orientation = VERTICAL; gravity = Gravity.CENTER; isClickable = true; isFocusable = true }
+    private val caption = TextView(context).apply { textSize = 10f; setTextColor(ACCENT); gravity = Gravity.CENTER }
+    private val handle = LinearLayout(context).apply { orientation = HORIZONTAL; gravity = Gravity.CENTER; isClickable = true; isFocusable = true }
     private var startX = 0f
     private var startY = 0f
     private var startReveal = 1f
@@ -37,12 +37,15 @@ class CollapsiblePanel(context: Context, private val onCollapse: () -> Unit) : L
     private var velocity: VelocityTracker? = null
 
     init {
-        orientation = VERTICAL; setPadding(dp(20), 0, dp(20), 0)
+        orientation = VERTICAL; setPadding(dp(14), 0, dp(14), 0)
         clipChildren = true
-        background = GradientDrawable().apply { setColor(PANEL); cornerRadius = dp(24).toFloat() }
-        val grip = View(context).apply { background = GradientDrawable().apply { setColor(0xff657365.toInt()); cornerRadius = dp(2).toFloat() } }
-        handle.addView(grip, LayoutParams(dp(30), dp(3)).apply { bottomMargin = dp(5) }); handle.addView(caption)
-        addView(handle, LayoutParams(-1, dp(48))); addView(content)
+        val r = dp(20).toFloat()
+        background = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(0x8a101411.toInt(), 0xbf101411.toInt())).apply {
+            cornerRadii = floatArrayOf(r, r, r, r, 0f, 0f, 0f, 0f)
+        }
+        val grip = View(context).apply { background = GradientDrawable().apply { setColor(0x9995a496.toInt()); cornerRadius = dp(2).toFloat() } }
+        handle.addView(grip, LayoutParams(dp(26), dp(3)).apply { rightMargin = dp(8) }); handle.addView(caption)
+        addView(handle, LayoutParams(-1, dp(28))); addView(content)
         handle.setOnClickListener { collapse(!collapsed) }
         updateHeader()
     }
