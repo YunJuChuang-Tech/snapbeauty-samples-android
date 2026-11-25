@@ -12,7 +12,7 @@
 
 | 场景入口 | 采集与渲染方案 | 依赖 SDK | 场景文档 |
 | :--- | :--- | :--- | :--- |
-| **相机美颜** | Camera2 → GLES 3.0 → 美颜引擎 → 屏幕预览 | `cn.snapbeauty:snapbeauty-android:1.3.5` | [效果清单](docs/EFFECTS.md) |
+| **相机美颜** | Camera2 → GLES 3.0 → 美颜引擎 → 屏幕预览 | `cn.snapbeauty:snapbeauty-android:1.3.6` | [效果清单](docs/EFFECTS.md) |
 | **腾讯云 TRTC** | TRTC 相机采集 → 共享 EGL 纹理美颜回调 → 发送 | `com.tencent.liteav:LiteAVSDK_TRTC:13.5.0.20670` | [TRTC 接入指南](docs/TRTC.md) |
 | **声网 Agora** | 自定义 Camera2 采集 → 美颜 → RGBA 外部视频源推送 | `io.agora.rtc:full-rtc-basic:4.6.4` | [Agora 接入指南](docs/AGORA.md) |
 | **即构 ZEGO** | 自定义 Camera2 采集 → 美颜 → 原始 RGBA 自定义采集推流 | `im.zego:express-video:3.25.0` | [ZEGO 接入指南](docs/ZEGO.md) |
@@ -29,7 +29,7 @@
 
 ---
 
-> Android SDK 1.3.5 已在 Maven Central 公开，可直接解析远程依赖。
+> Android SDK 1.3.6 已在 Maven Central 公开，可直接解析远程依赖。
 
 ## 快速上手
 

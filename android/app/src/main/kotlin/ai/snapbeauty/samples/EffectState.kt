@@ -45,10 +45,11 @@ class EffectState private constructor(values: Map<String, Float>, val style: Str
         )
         fun maleDefaults() = EffectState(
             mapOf(
-                "smooth" to .45f, "white" to .22f, "rosy" to .08f, "slim" to 0f, "eyes" to 0f, "makeup" to .6f,
-                "delspot" to .35f, "removePouch" to .40f, "removeNasolabial" to .20f,
-                "faceThree" to .40f, "eyeBright" to .20f, "aegyoSal" to .68f,
-                "sharpen" to .16f, "clarity" to .16f, "lipstick:coral" to .18f
+                "smooth" to .65f, "white" to .38f, "rosy" to .12f,
+                "slim" to .24f, "cheekV" to .16f, "cheekSmall" to .15f, "eyes" to .18f, "nose" to .14f,
+                "makeup" to .6f, "delspot" to .48f, "removePouch" to .55f, "removeNasolabial" to .35f,
+                "faceThree" to .18f, "eyeBright" to .28f, "aegyoSal" to .25f,
+                "sharpen" to .22f, "clarity" to .06f, "lipstick:coral" to .26f
             ),
             null, null, 1, 1000f / 30, false, "coral"
         )
