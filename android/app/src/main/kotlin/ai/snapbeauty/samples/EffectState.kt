@@ -39,7 +39,7 @@ class EffectState private constructor(values: Map<String, Float>, val style: Str
             mapOf(
                 "smooth" to .6f, "white" to .48f, "rosy" to .1f, "slim" to 0f, "eyes" to 0f, "makeup" to .6f,
                 "delspot" to .38f, "removePouch" to .45f, "removeNasolabial" to .35f,
-                "faceThree" to .28f, "eyeBright" to .28f, "aegyoSal" to .58f, "clarity" to .12f
+                "faceThree" to .28f, "eyeBright" to .28f, "aegyoSal" to .9f, "clarity" to .12f
             ),
             null, null, 1, 1000f / 30
         )
@@ -48,7 +48,7 @@ class EffectState private constructor(values: Map<String, Float>, val style: Str
                 "smooth" to .65f, "white" to .38f, "rosy" to .12f,
                 "slim" to .24f, "cheekV" to .16f, "cheekSmall" to .15f, "eyes" to .18f, "nose" to .14f,
                 "makeup" to .6f, "delspot" to .48f, "removePouch" to .55f, "removeNasolabial" to .35f,
-                "faceThree" to .18f, "eyeBright" to .28f, "aegyoSal" to .25f,
+                "faceThree" to .18f, "eyeBright" to .28f, "aegyoSal" to .4f,
                 "sharpen" to .22f, "clarity" to .06f, "lipstick:coral" to .26f
             ),
             null, null, 1, 1000f / 30, false, "coral"

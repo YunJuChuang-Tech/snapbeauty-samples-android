@@ -21,7 +21,7 @@ object SdkEffectChecks {
         }
         check(ProcessorFactory.faceParams(EffectState.defaults()) == FaceParams(), "Default bidirectional controls equal SDK neutral shape")
         check(ProcessorFactory.skinParams(EffectState(0f, 0f, 0f, 0f, 0f, 0f, null)) == SkinParams(), "Default extra skin controls equal SDK neutral detail")
-        check(ai.snapbeauty.core.SnapBeautyEngine.VERSION == "1.3.6", "Published SDK version is 1.3.6")
+        check(ai.snapbeauty.core.SnapBeautyEngine.VERSION == "1.3.7", "Published SDK version is 1.3.7")
         val resources = ProcessorFactory.resources(device.targetContext)
         val keys = (HostFilters.builtIn(device.targetContext.assets) + HostFilters.ids(device.targetContext.assets)).toSet()
         check(HostFilters.ids(device.targetContext.assets).size == 10, "All 10 CC BY-SA host filters are packaged with their notice")
