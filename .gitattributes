@@ -1,1 +1,3 @@
 **/host-filters/** -text -whitespace
+**/makeup/** -text -whitespace
+**/sample_makeup/** -text -whitespace
