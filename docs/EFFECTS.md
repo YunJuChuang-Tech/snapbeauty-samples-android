@@ -79,7 +79,7 @@
 
 ## 滤镜
 
-滤镜有两个来源，都动态发现、不在源码硬编码数量：SDK 1.3.7 AAR 内置的 `assets/snapbeauty/luts/*.png`（17 个，CC BY 4.0，署名随 SDK），以及本示例自带的 `assets/host-filters/luts/*.png`（10 个，CC BY-SA 4.0，署名见仓库 README 与该目录的 `NOTICE.md`）。宿主滤镜在创建引擎时用 `registerFilter(id, png)` 注册，之后与内置滤镜一样传给 `setFilter(key, intensity)`；另有“原色”（`null`）。自动搭配时强度跟随妆容浓度；手动选择或调节后可独立控制。选原色时禁用浓度控件，全部重置恢复默认妆容的搭配滤镜。
+滤镜有两个来源，都动态发现、不在源码硬编码数量：SDK 1.3.9 AAR 内置的 `assets/snapbeauty/luts/*.png`（17 个，CC BY 4.0，署名随 SDK），以及本示例自带的 `assets/host-filters/luts/*.png`（10 个，CC BY-SA 4.0，署名见仓库 README 与该目录的 `NOTICE.md`）。宿主滤镜在创建引擎时用 `registerFilter(id, png)` 注册，之后与内置滤镜一样传给 `setFilter(key, intensity)`；另有“原色”（`null`）。自动搭配时强度跟随妆容浓度；手动选择或调节后可独立控制。选原色时禁用浓度控件，全部重置恢复默认妆容的搭配滤镜。
 
 | SDK key 前缀 | 中文系列 |
 | ------------ | -------- |

@@ -6,7 +6,7 @@
 
 - Android API 23 及以上、OpenGL ES 3.0；低版本设备上的 TRTC 场景待验证。
 - TRTC：`com.tencent.liteav:LiteAVSDK_TRTC:13.5.0.20670`。
-- 美颜引擎：Gradle 解析的 SnapBeauty 1.3.7，不随源码仓库提交。
+- 美颜引擎：Gradle 解析的 SnapBeauty 1.3.9，不随源码仓库提交。
 
 ```powershell
 .\android\gradlew.bat -p android :app:assembleDebug

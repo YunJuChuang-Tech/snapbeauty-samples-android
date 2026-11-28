@@ -6,7 +6,7 @@
 
 - JDK 17、Android SDK 36，Android 8.0 / API 26 及以上、OpenGL ES 3.0。
 - Kotlin 2.3.10、AGP 8.13.2、Gradle Wrapper 8.13。
-- Gradle 从 Maven 仓库解析 `cn.snapbeauty:snapbeauty-android:1.3.7`；SDK 使用及再分发遵循其自身条款。
+- Gradle 从 Maven 仓库解析 `cn.snapbeauty:snapbeauty-android:1.3.9`；SDK 使用及再分发遵循其自身条款。
 - 统一 APK 包含 arm64-v8a 和 armeabi-v7a，与本地美颜引擎的架构范围一致。
 - 通过 `ANDROID_HOME` 或不提交的 `android/local.properties` 指定 Android SDK。
 
